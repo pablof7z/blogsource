@@ -4,7 +4,7 @@
 
 url: http://heelhook.github.com
 title: heelhook
-subtitle: '#'
+subtitle:
 author: Pablo Fernandez
 simple_search:
 description: description
@@ -70,6 +70,8 @@ twitter_show_replies: false
 twitter_follow_button: true
 twitter_show_follower_count: false
 twitter_tweet_button: true
+
+linkedin_user: pablofer
 
 # Google +1
 google_plus_one: false

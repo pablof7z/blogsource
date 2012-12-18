@@ -16,6 +16,7 @@ Searching around I found a few persons with the same problem and no solutions, s
 
 This is the resulting code:
 
+``` ruby
 acts_as_authentic do |c|
  c.validates_uniqueness_of_email_field_options = {:if => "false"}
  c.validates_length_of_login_field_options = {:if => "false", :minimum => 4}
@@ -24,6 +25,7 @@ acts_as_authentic do |c|
  c.validates_confirmation_of_password_field_options = {:if => "false"}
  c.validates_length_of_password_confirmation_field_options = {:if => "false", :minimum => 4 }
 end
+```
 So as you can see a couple of options are a bit lame, like having a minimum when the if is being set to false, well, if you remove the minumum validates_length_of will complain (it makes sense from validates_length_of point of view, after all, if you are never going to be using the validation why call the function at all?)
 
 I hope this helps and saves some time.

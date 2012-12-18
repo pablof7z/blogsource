@@ -1,14 +1,16 @@
 ---
 layout: default
-sidebar: false
-footer: false
 ---
 
 <div>
-<article role="article">
+<article role="article" class="post">
+  {% unless page.sharing == false %}
+    {% include post/sharing.html %}
+  {% endunless %}
   {% if page.title %}
   <header>
-    <h1 class="entry-title">{% if site.titlecase %}{{ page.title | titlecase }}{% else %}{{ page.title }}{% endif %}</h1>
+    <h2 class="entry-title">{% if site.titlecase %}{{ page.title | titlecase }}{% else %}{{ page.title }}{% endif %}</h2>
+    {% if page.date %}<p class="meta">{% include post/date.html %}{{ time }}</p>{% endif %}
   </header>
   {% endif %}
   {{ content }}
@@ -19,9 +21,6 @@ footer: false
         {% include post/date.html %}{% if updated %}{{ updated }}{% else %}{{ time }}{% endif %}
         {% if page.categories %}{% include post/categories.html %}{% endif %}
       </p>{% endif %}
-      {% unless page.sharing == false %}
-        {% include post/sharing.html %}
-      {% endunless %}
     </footer>
   {% endunless %}
 </article>
@@ -32,12 +31,3 @@ footer: false
   </section>
 {% endif %}
 </div>
-{% unless page.sidebar == false %}
-<aside class="sidebar">
-  {% if site.page_asides.size %}
-    {% include_array page_asides %}
-  {% else %}
-    {% include_array default_asides %}
-  {% endif %}
-</aside>
-{% endunless %}

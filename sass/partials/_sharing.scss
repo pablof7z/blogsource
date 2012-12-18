@@ -1,5 +1,12 @@
-.sharing {
+.sharing-box {
   p.meta + & {
     padding: { top: 1em; left: 0; }
   }
 }
+
+/* Sharing box rules */
+div.sharing-box {
+  margin: 20px 0px;
+}
+
+#fb-root { display: none; }

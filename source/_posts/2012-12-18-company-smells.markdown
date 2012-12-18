@@ -7,8 +7,8 @@ categories:
   - random thoughts
 ---
 
-Most developers don't need an explanation of what a "* Smell" refers to, but I'm
-assuming that the companies that fit the description of this post won't
+Most developers won't need a reminder of what a "* Smell" refers to, but I'll
+assume that the companies that fit the description of this post won't
 (incidentally, those companies probably wouldn't read this blog post either). A
 "code smell" is an indication, a symptom, within a codebase, of a problem.
 
@@ -33,6 +33,8 @@ The homepage of "theSourcery" goes on to say:
 > We're re-inventing the way recruiting is done by changing the incentive
 > structure for recruiters and leveraging data and software while keeping our
 > work human powered and personal.
+
+<!-- more -->
 
 I'll (fail at trying to) overlook the obvious fact that there is no explanation
 of what this likely earth-shattering re-invention of the way recruitment is
