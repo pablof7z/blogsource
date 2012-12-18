@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: programming | heelhook]]></title>
+  <link href="http://heelhook.github.com/blog/categories/programming/atom.xml" rel="self"/>
+  <link href="http://heelhook.github.com/"/>
+  <updated>2012-12-18T04:29:15-03:00</updated>
+  <id>http://heelhook.github.com/</id>
+  <author>
+    <name><![CDATA[Pablo Fernandez]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Compare permissions script]]></title>
+    <link href="http://heelhook.github.com/blog/2011/03/15/compare-permissions-script/"/>
+    <updated>2011-03-15T23:15:00-03:00</updated>
+    <id>http://heelhook.github.com/blog/2011/03/15/compare-permissions-script</id>
+    <content type="html"><![CDATA[<p>Recently I needed to compare some permissions between two directories, I wrote this script that could be useful for someone else:</p>
+
+<p>``` bash</p>
+
+<h1>!/bin/bash</h1>
+
+<h1>This script will go through a list of files and directories and match their</h1>
+
+<h1>permissions against another directory, it can also copy the permissions from</h1>
+
+<h1>the first directory.</h1>
+
+<p>#</p>
+
+<h1>Written by Pablo Fernandez</h1>
+
+<p>#</p>
+
+<p>function showusage()
+{</p>
+
+<pre><code>    echo "USAGE: $0 OPTS DIR1 DIR2"
+    echo
+    echo "OPTIONS:"
+    echo "-a Apply changes (update permissions of DIR2"
+    echo "-w Warning on missing files"
+    echo "-q Quiet mode"
+    echo "-h Show this help"
+    echo "The directory DIR1 will be matched against DIR2. The directory DIR2 will"
+    echo "be corrected with all permission differences."
+</code></pre>
+
+<p>}</p>
+
+<p>apply_changes=""</p>
+
+<p>while [ ! -z "$1" ]; do</p>
+
+<pre><code>    case "$1" in
+            -a)
+                    apply_changes=1
+                    ;;
+            -w)
+                    warn_on_missing=1
+                    ;;
+            -q)
+                    quiet=1
+                    ;;
+            -h)
+                    showusage
+                    exit 0
+                    ;;
+            *)
+                    if [ -z "$orig" ]; then
+                            orig=$1
+                    elif [ -z "$targ" ]; then
+                            targ=$1
+                    else
+                            echo "Unknown flag $1"
+                            showusage
+                            exit 1
+                    fi
+    esac
+    shift
+</code></pre>
+
+<p>done</p>
+
+<p>if [ -z "$orig" -o -z "$targ" ]; then</p>
+
+<pre><code>    showusage
+    exit 1
+</code></pre>
+
+<p>fi</p>
+
+<h1>Change into the directory and get a list of files and dirs</h1>
+
+<p>pushd . >/dev/null
+cd $orig
+list=<code>find .</code>
+popd >/dev/null</p>
+
+<h1>Go through the list</h1>
+
+<p>for i in $list; do</p>
+
+<pre><code>    # Get the permissions of the orig file and targ file
+    p=`stat -c %a $orig/$i`
+    p1=`stat -c %a $targ/$i 2&gt;/dev/null`
+
+    [ "$quiet" = "" ] &amp;&amp; echo -n "$i: "
+
+    if [ "$p1" = "" ]; then
+            # No permissions for targ file, targ file doesn't exist
+            [ "$quiet" = "" ] &amp;&amp; echo "not present"
+
+            if [ "$warn_on_missing" != "" -a "$quiet" != "" ]; then
+                    echo "$targ/$i not present"
+            fi
+    else
+            # Permission for targ file, compare
+            if [ "$p" != "$p1" ]; then
+                    # Permissions are different going to try to set permissions
+                    if [ "$apply_changes" != "" ]; then
+                            # Set permissions
+                            e=`chmod $p $targ/$i 2&gt;&amp;1 &gt;/dev/null`
+
+                            if [ "$?" != "0" ]; then
+                                    [ "$quiet" = "" ] &amp;&amp; echo "different permission, change to $p failed, $e"
+                                    [ "$quiet" != "" ] &amp;&amp; echo "$e"
+                            else
+                                    [ "$quiet" = "" ] &amp;&amp; echo "set to $p"
+                            fi
+                    else
+                            # Running just for report
+                            [ "$quiet" = "" ] &amp;&amp; echo "different, orig is $p targ is $p1"
+                            [ "$quiet" != "" ] &amp;&amp; echo "Permission of $targ/$i is different than $orig/$i"
+                    fi
+            else
+                    [ "$quiet" = "" ] &amp;&amp; echo "Ok"
+            fi
+    fi
+</code></pre>
+
+<p>done
+```</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[acts_as_authentic nightmare]]></title>
+    <link href="http://heelhook.github.com/blog/2010/06/23/acts-as-authentic-nightmare/"/>
+    <updated>2010-06-23T23:10:00-03:00</updated>
+    <id>http://heelhook.github.com/blog/2010/06/23/acts-as-authentic-nightmare</id>
+    <content type="html"><![CDATA[<p>So I decided to do a few tests on the Server Protectors’ website and noticed a few annoyances with the register form, I decided to delve in and fix it, just a couple of extra validations, not too much.</p>
+
+<p>Half an hour later I was pretty much ready to do some open heart surgery on authlogic, man is the configuration of act_as_authentic confusing! And of course, RTFMing doesn’t work, there is not a single example of how changing the default act_as_authentic configuration works!</p>
+
+<p>Searching around I found a few persons with the same problem and no solutions, so I thought I should share how I did it, or rather, what I did.</p>
+
+<p>This is the resulting code:</p>
+
+<p>acts_as_authentic do |c|
+ c.validates_uniqueness_of_email_field_options = {:if => "false"}
+ c.validates_length_of_login_field_options = {:if => "false", :minimum => 4}
+ c.validates_format_of_login_field_options = {:if => "false", :with => Authlogic::Regex.login}
+ c.validates_length_of_email_field_options = {:if => "false", :minimum => 4}
+ c.validates_confirmation_of_password_field_options = {:if => "false"}
+ c.validates_length_of_password_confirmation_field_options = {:if => "false", :minimum => 4 }
+end
+So as you can see a couple of options are a bit lame, like having a minimum when the if is being set to false, well, if you remove the minumum validates_length_of will complain (it makes sense from validates_length_of point of view, after all, if you are never going to be using the validation why call the function at all?)</p>
+
+<p>I hope this helps and saves some time.</p>
+]]></content>
+  </entry>
+  
+</feed>

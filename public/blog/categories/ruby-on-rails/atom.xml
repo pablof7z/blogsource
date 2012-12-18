@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: ruby on rails | heelhook]]></title>
+  <link href="http://heelhook.github.com/blog/categories/ruby-on-rails/atom.xml" rel="self"/>
+  <link href="http://heelhook.github.com/"/>
+  <updated>2012-12-18T04:29:15-03:00</updated>
+  <id>http://heelhook.github.com/</id>
+  <author>
+    <name><![CDATA[Pablo Fernandez]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[acts_as_authentic nightmare]]></title>
+    <link href="http://heelhook.github.com/blog/2010/06/23/acts-as-authentic-nightmare/"/>
+    <updated>2010-06-23T23:10:00-03:00</updated>
+    <id>http://heelhook.github.com/blog/2010/06/23/acts-as-authentic-nightmare</id>
+    <content type="html"><![CDATA[<p>So I decided to do a few tests on the Server Protectors’ website and noticed a few annoyances with the register form, I decided to delve in and fix it, just a couple of extra validations, not too much.</p>
+
+<p>Half an hour later I was pretty much ready to do some open heart surgery on authlogic, man is the configuration of act_as_authentic confusing! And of course, RTFMing doesn’t work, there is not a single example of how changing the default act_as_authentic configuration works!</p>
+
+<p>Searching around I found a few persons with the same problem and no solutions, so I thought I should share how I did it, or rather, what I did.</p>
+
+<p>This is the resulting code:</p>
+
+<p>acts_as_authentic do |c|
+ c.validates_uniqueness_of_email_field_options = {:if => "false"}
+ c.validates_length_of_login_field_options = {:if => "false", :minimum => 4}
+ c.validates_format_of_login_field_options = {:if => "false", :with => Authlogic::Regex.login}
+ c.validates_length_of_email_field_options = {:if => "false", :minimum => 4}
+ c.validates_confirmation_of_password_field_options = {:if => "false"}
+ c.validates_length_of_password_confirmation_field_options = {:if => "false", :minimum => 4 }
+end
+So as you can see a couple of options are a bit lame, like having a minimum when the if is being set to false, well, if you remove the minumum validates_length_of will complain (it makes sense from validates_length_of point of view, after all, if you are never going to be using the validation why call the function at all?)</p>
+
+<p>I hope this helps and saves some time.</p>
+]]></content>
+  </entry>
+  
+</feed>
